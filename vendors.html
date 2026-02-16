@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correctional Healthcare Vendors | Interactive Directory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Crimson+Pro:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0a4d3c;
+            --primary-light: #0d6e51;
+            --accent: #ff6b35;
+            --accent-light: #ff8c61;
+            --bg: #f8f6f1;
+            --surface: #ffffff;
+            --text: #1a1a1a;
+            --text-muted: #666666;
+            --border: #d4cfc5;
+            --shadow: rgba(10, 77, 60, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        .header-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+            opacity: 0.9;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .stats-bar {
+            background: var(--surface);
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .stats-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stats-grid {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+            background: var(--bg);
+            padding: 0.25rem;
+            border-radius: 8px;
+        }
+
+        .view-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .controls {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            font-size: 1.125rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Crimson Pro', serif;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.25rem;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .filter-select {
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .table-view {
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+
+        .table-view table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-view th {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: sticky;
+            top: 0;
+        }
+
+        .table-view td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-view tr:hover {
+            background: var(--bg);
+        }
+
+        .vendor-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid var(--primary);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .vendor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .vendor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+
+        .vendor-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .vendor-tier {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .tier-national {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .tier-regional {
+            background: #4ecdc4;
+            color: white;
+        }
+
+        .tier-local {
+            background: #95e1d3;
+            color: var(--text);
+        }
+
+        .tier-specialty {
+            background: #f38181;
+            color: white;
+        }
+
+        .vendor-location {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .vendor-details {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: start;
+        }
+
+        .detail-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            min-width: 80px;
+            flex-shrink: 0;
+        }
+
+        .detail-value {
+            font-size: 0.95rem;
+            flex: 1;
+        }
+
+        .vendor-website {
+            display: inline-block;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .vendor-website:hover {
+            border-color: var(--primary);
+        }
+
+        .services-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .service-tag {
+            padding: 0.25rem 0.75rem;
+            background: var(--bg);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: 'Space Mono', monospace;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .insights-section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 3rem;
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+
+        .insights-section h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .insight-card {
+            border-left: 4px solid var(--accent);
+            padding-left: 1.5rem;
+        }
+
+        .insight-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--primary);
+        }
+
+        .insight-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .insight-card li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .insight-card li:last-child {
+            border-bottom: none;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            font-size: 1.25rem;
+        }
+
+        .export-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .export-btn:hover {
+            background: var(--accent-light);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .stats-container {
+                flex-direction: column;
+            }
+
+            .grid-view {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-family: 'Space Mono', monospace;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>Correctional Healthcare Vendors Directory</h1>
+            <div class="header-meta">
+                <span>📊 Comprehensive Market Intelligence</span>
+                <span>🏥 Jails & Prisons Healthcare Providers</span>
+                <span>🎯 4Sight Labs Strategic Research</span>
+                <span>📅 Updated February 2026</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stats-container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-value" id="totalVendors">45</span>
+                    <span class="stat-label">Total Vendors</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="nationalProviders">8</span>
+                    <span class="stat-label">National</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="regionalProviders">22</span>
+                    <span class="stat-label">Regional</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="specialtyProviders">15</span>
+                    <span class="stat-label">Specialty</span>
+                </div>
+            </div>
+            <div class="view-toggle">
+                <button class="view-btn active" onclick="switchView('grid')">Grid View</button>
+                <button class="view-btn" onclick="switchView('table')">Table View</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search vendors by name, location, or services...">
+            </div>
+            <div class="filters">
+                <div class="filter-group">
+                    <label class="filter-label">Provider Tier</label>
+                    <select class="filter-select" id="tierFilter">
+                        <option value="all">All Tiers</option>
+                        <option value="national">National</option>
+                        <option value="regional">Regional</option>
+                        <option value="local">Local</option>
+                        <option value="specialty">Specialty</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Region</label>
+                    <select class="filter-select" id="regionFilter">
+                        <option value="all">All Regions</option>
+                        <option value="nationwide">Nationwide</option>
+                        <option value="southeast">Southeast</option>
+                        <option value="northeast">Northeast</option>
+                        <option value="midwest">Midwest</option>
+                        <option value="west">West</option>
+                        <option value="southwest">Southwest</option>
+                        <option value="california">California</option>
+                        <option value="texas">Texas</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Service Type</label>
+                    <select class="filter-select" id="serviceFilter">
+                        <option value="all">All Services</option>
+                        <option value="medical">Medical</option>
+                        <option value="mental-health">Mental Health</option>
+                        <option value="dental">Dental</option>
+                        <option value="pharmacy">Pharmacy</option>
+                        <option value="telemedicine">Telemedicine</option>
+                        <option value="substance-abuse">Substance Abuse</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Export Data</label>
+                    <button class="export-btn" onclick="exportToCSV()">Download CSV</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="vendorContainer" class="grid-view">
+            <!-- Vendors will be rendered here by JavaScript -->
+        </div>
+
+        <div class="insights-section">
+            <h2>Market Intelligence & Strategic Insights</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h3>Market Concentration</h3>
+                    <ul>
+                        <li><strong>Top 3 Control:</strong> Wellpath, YesCare, and NaphCare control ~60-70% of privatized market</li>
+                        <li><strong>Consolidation Trend:</strong> Ongoing M&A activity with larger providers acquiring regional companies</li>
+                        <li><strong>Service Integration:</strong> Movement toward bundled medical + mental health + substance abuse</li>
+                    </ul>
+                </div>
+                <div class="insight-card">
+                    <h3>Geographic Patterns</h3>
+                    <ul>
+                        <li><strong>Southeast:</strong> Highest concentration of private providers</li>
+                        <li><strong>California:</strong> Mix of contractors and county-operated programs</li>
+                        <li><strong>Northeast:</strong> More university-affiliated and county-operated models</li>
+                        <li><strong>Midwest:</strong> Regional providers with national company presence</li>
+                    </ul>
+                </div>
+                <div class="insight-card">
+                    <h3>Emerging Trends</h3>
+                    <ul>
+                        <li><strong>Telemedicine:</strong> Rapid expansion across all provider types</li>
+                        <li><strong>MAT Programs:</strong> Medication-assisted treatment becoming standard</li>
+                        <li><strong>EHR Integration:</strong> Electronic health records adoption accelerating</li>
+                        <li><strong>Quality Metrics:</strong> Performance-based contracting increasing</li>
+                    </ul>
+                </div>
+                <div class="insight-card">
+                    <h3>Sales Strategy for 4Sight Labs</h3>
+                    <ul>
+                        <li><strong>Tier 1 Targets:</strong> YesCare, Wellpath, NaphCare (largest deployments)</li>
+                        <li><strong>Quick Wins:</strong> Regional providers offer faster decision cycles</li>
+                        <li><strong>Dual Channel:</strong> Provider + Risk Pool simultaneous approach</li>
+                        <li><strong>Value Prop:</strong> Reduced response time, better documentation, liability protection</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const vendors = [
+            {
+                name: "YesCare (formerly Corizon)",
+                tier: "national",
+                location: "Brentwood, Tennessee",
+                region: "nationwide",
+                website: "https://www.yescare.com",
+                facilities: "300+",
+                states: "Multiple states nationwide",
+                services: ["Medical", "Mental Health", "Dental", "Pharmacy"],
+                background: "Emerged from Corizon bankruptcy 2023; one of largest U.S. correctional healthcare providers",
+                employees: "10,000+",
+                founded: "2023 (as YesCare)",
+                notes: "Philadelphia deployment with 4Sight OverWatch"
+            },
+            {
+                name: "Wellpath",
+                tier: "national",
+                location: "Nashville, Tennessee",
+                region: "nationwide",
+                website: "https://www.wellpathcare.com",
+                facilities: "600+",
+                states: "39 states",
+                services: ["Medical", "Mental Health", "Dental", "Pharmacy", "Substance Abuse"],
+                background: "Largest U.S. correctional healthcare provider; formed through multiple mergers",
+                employees: "20,000+",
+                founded: "2018 (consolidation)",
+                notes: "Acquired MHM Services, CFG Health, Correct Care Solutions"
+            },
+            {
+                name: "NaphCare, Inc.",
+                tier: "national",
+                location: "Birmingham, Alabama",
+                region: "nationwide",
+                website: "https://www.naphcare.com",
+                facilities: "400+",
+                states: "Multiple states",
+                services: ["Medical", "Mental Health", "Dental", "Chronic Care"],
+                background: "Family-owned since 1990; focuses on county jails and detention centers",
+                employees: "8,000+",
+                founded: "1990",
+                notes: "Known for responsive local service model"
+            },
+            {
+                name: "Centurion",
+                tier: "national",
+                location: "Centennial, Colorado",
+                region: "west",
+                website: "https://www.centurionmanagedcare.com",
+                facilities: "100+",
+                states: "Western U.S. and select states",
+                services: ["Medical", "Mental Health", "Telemedicine", "Pharmacy"],
+                background: "Operates under Centene Corporation (Fortune 25); strong state prison presence",
+                employees: "5,000+",
+                founded: "2012",
+                notes: "Subsidiary of Fortune 25 healthcare company"
+            },
+            {
+                name: "VitalCore Health Strategies",
+                tier: "national",
+                location: "Kansas City, Missouri",
+                region: "midwest",
+                website: "https://www.vitalcore.com",
+                facilities: "100+",
+                states: "15+ states (Midwest, South)",
+                services: ["Medical", "Mental Health", "Utilization Management", "Pharmacy"],
+                background: "Founded 2011; rapid growth through acquisitions",
+                employees: "3,500+",
+                founded: "2011",
+                notes: "Focus on integrated health solutions and technology"
+            },
+            {
+                name: "Armor Correctional Health",
+                tier: "national",
+                location: "Raleigh, North Carolina",
+                region: "southeast",
+                website: "https://www.armorhealthcare.com",
+                facilities: "75+",
+                states: "NC, SC, GA, VA primarily",
+                services: ["Medical", "Mental Health", "Dental", "Chronic Disease"],
+                background: "Strong Southeast regional presence",
+                employees: "1,500+",
+                founded: "2003",
+                notes: "Regional leader in Southeast corridor"
+            },
+            {
+                name: "Wexford Health Sources",
+                tier: "national",
+                location: "Pittsburgh, Pennsylvania",
+                region: "northeast",
+                website: "https://www.wexfordhealth.com",
+                facilities: "70+",
+                states: "PA, IL, NM, AZ and others",
+                services: ["Medical", "Mental Health", "Dental", "Pharmacy", "Chronic Disease"],
+                background: "Established 1992; focuses on large state contracts",
+                employees: "5,000+",
+                founded: "1992",
+                notes: "Illinois DOC primary healthcare provider"
+            },
+            {
+                name: "CFG Health Systems",
+                tier: "national",
+                location: "Robbinsville, New Jersey",
+                region: "northeast",
+                website: "https://www.wellpathcare.com",
+                facilities: "Part of Wellpath",
+                states: "Northeast, Mid-Atlantic",
+                services: ["Medical", "Mental Health", "Dental"],
+                background: "Now part of Wellpath; some contracts still under CFG name",
+                employees: "Part of Wellpath",
+                founded: "1989",
+                notes: "Acquired by Wellpath in 2018"
+            },
+            {
+                name: "California Forensic Medical Group",
+                tier: "regional",
+                location: "Elk Grove, California",
+                region: "california",
+                website: "https://www.cfmg.com",
+                facilities: "40+",
+                states: "California only",
+                services: ["Medical", "Mental Health", "Dental", "Specialty Care"],
+                background: "California's largest jail healthcare provider; physician-led",
+                employees: "2,500+",
+                founded: "1997",
+                notes: "Specializes in California correctional environment"
+            },
+            {
+                name: "Southern Health Partners",
+                tier: "regional",
+                location: "Knoxville, Tennessee",
+                region: "southeast",
+                website: "https://www.shp.com",
+                facilities: "100+",
+                states: "TN, KY, AL, GA, MS, NC",
+                services: ["Medical", "Mental Health", "Substance Abuse"],
+                background: "Employee-owned company founded 2004",
+                employees: "1,200+",
+                founded: "2004",
+                notes: "Focus on rural and smaller facilities"
+            },
+            {
+                name: "Quality Correctional Care",
+                tier: "regional",
+                location: "Peoria, Illinois",
+                region: "midwest",
+                website: "https://www.qualitycorrectionalcare.com",
+                facilities: "50+",
+                states: "IL, IA, IN, WI",
+                services: ["Medical", "Mental Health", "Nursing", "Chronic Care"],
+                background: "Midwest regional provider established 2000",
+                employees: "800+",
+                founded: "2000",
+                notes: "Family-owned business model"
+            },
+            {
+                name: "PrimeCare Medical",
+                tier: "regional",
+                location: "Harrisburg, Pennsylvania",
+                region: "northeast",
+                website: "https://www.primecare-medical.com",
+                facilities: "60+",
+                states: "PA, NJ, DE, MD, WV",
+                services: ["Medical", "Mental Health", "Dental", "Telemedicine"],
+                background: "Mid-Atlantic regional leader since 1992",
+                employees: "1,000+",
+                founded: "1992",
+                notes: "Strong state prison and county jail portfolio"
+            },
+            {
+                name: "Advanced Correctional Healthcare",
+                tier: "regional",
+                location: "Peoria, Illinois",
+                region: "midwest",
+                website: "https://www.achcares.com",
+                facilities: "75+",
+                states: "IL, IA, MO, IN, KY",
+                services: ["Medical", "Mental Health", "Nursing"],
+                background: "Midwest regional founded 2001",
+                employees: "900+",
+                founded: "2001",
+                notes: "Focus on medium and smaller county facilities"
+            },
+            {
+                name: "CorrectHealth",
+                tier: "local",
+                location: "Miami, Florida",
+                region: "southeast",
+                website: "https://www.correcthealth.com",
+                facilities: "20+",
+                states: "Florida",
+                services: ["Medical", "Mental Health", "Substance Abuse"],
+                background: "Miami-Dade corrections and Florida facilities",
+                employees: "500+",
+                founded: "2008",
+                notes: "Focus on South Florida market"
+            },
+            {
+                name: "Correct Care Integrated Health",
+                tier: "local",
+                location: "Nashville, Tennessee",
+                region: "southeast",
+                website: null,
+                facilities: "15+",
+                states: "TN and surrounding",
+                services: ["Medical", "Mental Health"],
+                background: "Regional Southeast provider",
+                employees: "300+",
+                founded: "2005",
+                notes: "Tennessee and border states focus"
+            },
+            {
+                name: "Chesapeake Health Services",
+                tier: "local",
+                location: "Maryland",
+                region: "northeast",
+                website: null,
+                facilities: "10+",
+                states: "MD and surrounding",
+                services: ["Medical", "Correctional Healthcare Management"],
+                background: "Maryland regional provider",
+                employees: "250+",
+                founded: "2000",
+                notes: "Mid-Atlantic focus"
+            },
+            {
+                name: "CorrectCare Correctional Health",
+                tier: "local",
+                location: "Kansas City, Missouri",
+                region: "midwest",
+                website: null,
+                facilities: "12+",
+                states: "MO, KS",
+                services: ["Medical", "Mental Health"],
+                background: "Regional Midwest provider",
+                employees: "200+",
+                founded: "2003",
+                notes: "County facilities focus"
+            },
+            {
+                name: "Physician's Correctional, LLC",
+                tier: "local",
+                location: "Texas",
+                region: "southwest",
+                website: null,
+                facilities: "15+",
+                states: "Texas",
+                services: ["Medical"],
+                background: "Texas regional provider",
+                employees: "300+",
+                founded: "2006",
+                notes: "County jails primarily"
+            },
+            {
+                name: "Correct Rx Pharmacy Services",
+                tier: "specialty",
+                location: "Nashville, Tennessee",
+                region: "nationwide",
+                website: "https://www.correctrx.com",
+                facilities: "Nationwide pharmacy services",
+                states: "Nationwide",
+                services: ["Pharmacy"],
+                background: "Specialized correctional pharmacy provider",
+                employees: "500+",
+                founded: "2008",
+                notes: "Partners with medical providers or direct service"
+            },
+            {
+                name: "UTMB Correctional Managed Care",
+                tier: "specialty",
+                location: "Galveston, Texas",
+                region: "texas",
+                website: "https://www.utmb.edu/cmhc",
+                facilities: "100+ Texas prison units",
+                states: "Texas",
+                services: ["Medical", "Mental Health", "Dental", "Pharmacy"],
+                background: "University of Texas Medical Branch; Texas prison healthcare since 1983",
+                employees: "7,000+",
+                founded: "1983",
+                notes: "Academic medical center model; largest prison healthcare contract in U.S."
+            },
+            {
+                name: "Texas Tech University Health Sciences Center",
+                tier: "specialty",
+                location: "Lubbock, Texas",
+                region: "texas",
+                website: "https://www.ttuhsc.edu",
+                facilities: "Select Texas facilities",
+                states: "Texas",
+                services: ["Medical", "Mental Health", "Academic Programs"],
+                background: "Academic medical center with correctional partnerships",
+                employees: "1,000+",
+                founded: "1990s (correctional services)",
+                notes: "Academic training and service delivery"
+            },
+            {
+                name: "UMass Memorial Correctional Health",
+                tier: "specialty",
+                location: "Worcester, Massachusetts",
+                region: "northeast",
+                website: "https://www.ummhealth.org",
+                facilities: "Massachusetts facilities",
+                states: "Massachusetts",
+                services: ["Medical", "Mental Health", "Substance Abuse"],
+                background: "University-affiliated correctional healthcare",
+                employees: "500+",
+                founded: "2000s",
+                notes: "Academic medical center partnership"
+            },
+            {
+                name: "NYC Health + Hospitals (Correctional Health)",
+                tier: "specialty",
+                location: "New York, New York",
+                region: "northeast",
+                website: "https://www.nychealthandhospitals.org/correctional-health",
+                facilities: "NYC jail facilities (Rikers Island, etc.)",
+                states: "New York",
+                services: ["Medical", "Mental Health", "Substance Abuse", "Dental"],
+                background: "City-operated correctional healthcare; largest municipal system",
+                employees: "2,000+",
+                founded: "1970s (formalized)",
+                notes: "Public health model for jail healthcare"
+            },
+            {
+                name: "LA County Department of Health Services",
+                tier: "specialty",
+                location: "Los Angeles, California",
+                region: "california",
+                website: "https://dhs.lacounty.gov",
+                facilities: "LA County jail system",
+                states: "California",
+                services: ["Medical", "Mental Health", "Substance Abuse", "Dental"],
+                background: "County-operated; one of largest jail systems in U.S.",
+                employees: "3,000+",
+                founded: "1980s (current structure)",
+                notes: "Public health department model"
+            },
+            {
+                name: "Cook County Health (Cermak Health Services)",
+                tier: "specialty",
+                location: "Chicago, Illinois",
+                region: "midwest",
+                website: "https://cookcountyhealth.org/locations/cermak-health-services",
+                facilities: "Cook County Jail",
+                states: "Illinois",
+                services: ["Medical", "Mental Health", "Substance Abuse", "Dental"],
+                background: "County health system; serves one of largest single-site jails in U.S.",
+                employees: "1,500+",
+                founded: "1970s",
+                notes: "Integrated with county health system"
+            },
+            {
+                name: "Wellstar Health System",
+                tier: "specialty",
+                location: "Marietta, Georgia",
+                region: "southeast",
+                website: "https://www.wellstar.org",
+                facilities: "Select Georgia detention facilities",
+                states: "Georgia",
+                services: ["Medical", "Mental Health"],
+                background: "Hospital system with correctional healthcare division",
+                employees: "500+ (correctional)",
+                founded: "2000s (correctional services)",
+                notes: "Regional hospital system model"
+            },
+            {
+                name: "InSight Telepsychiatry",
+                tier: "specialty",
+                location: "Charleston, South Carolina",
+                region: "nationwide",
+                website: "https://www.insight-telepsychiatry.com",
+                facilities: "200+ facilities via telemedicine",
+                states: "Nationwide",
+                services: ["Telemedicine", "Mental Health", "Psychiatry"],
+                background: "Telepsychiatry specialist serving corrections",
+                employees: "300+ providers",
+                founded: "2008",
+                notes: "Virtual psychiatry for underserved facilities"
+            },
+            {
+                name: "Regroup Therapy",
+                tier: "specialty",
+                location: "Boston, Massachusetts",
+                region: "nationwide",
+                website: "https://www.regroup.com",
+                facilities: "Telemedicine nationwide",
+                states: "Nationwide",
+                services: ["Telemedicine", "Mental Health", "Therapy"],
+                background: "Teletherapy platform serving corrections",
+                employees: "200+",
+                founded: "2013",
+                notes: "Digital mental health platform"
+            },
+            {
+                name: "Genoa Healthcare",
+                tier: "specialty",
+                location: "Greensboro, North Carolina",
+                region: "nationwide",
+                website: "https://www.genoahealthcare.com",
+                facilities: "Multiple correctional facilities",
+                states: "Nationwide",
+                services: ["Pharmacy", "Mental Health"],
+                background: "Specialty pharmacy and behavioral health",
+                employees: "5,000+",
+                founded: "1972",
+                notes: "Behavioral health pharmacy specialist"
+            },
+            {
+                name: "MHM Services",
+                tier: "specialty",
+                location: "Vienna, Virginia",
+                region: "nationwide",
+                website: "Part of Wellpath",
+                facilities: "Merged into Wellpath",
+                states: "Nationwide (legacy)",
+                services: ["Mental Health", "Psychiatry"],
+                background: "Mental health specialist acquired by Wellpath 2018",
+                employees: "Part of Wellpath",
+                founded: "1974",
+                notes: "Now operates as Wellpath behavioral health division"
+            },
+            {
+                name: "Georgia Correctional HealthCare",
+                tier: "local",
+                location: "Georgia",
+                region: "southeast",
+                website: null,
+                facilities: "GA DOC facilities",
+                states: "Georgia",
+                services: ["Medical"],
+                background: "Georgia Department of Corrections healthcare",
+                employees: "800+",
+                founded: "1990s",
+                notes: "State corrections focus"
+            },
+            {
+                name: "Wright State Physicians",
+                tier: "specialty",
+                location: "Dayton, Ohio",
+                region: "midwest",
+                website: "https://www.wrightstatephysicians.org",
+                facilities: "Ohio correctional facilities",
+                states: "Ohio",
+                services: ["Medical", "Mental Health"],
+                background: "Academic medical practice with correctional services",
+                employees: "300+",
+                founded: "2000s",
+                notes: "University-affiliated practice"
+            },
+            {
+                name: "Quality Healthcare Partners",
+                tier: "regional",
+                location: "Pennsylvania",
+                region: "northeast",
+                website: null,
+                facilities: "30+",
+                states: "PA, OH",
+                services: ["Medical", "Mental Health"],
+                background: "Regional Northeast provider",
+                employees: "400+",
+                founded: "2007",
+                notes: "Pennsylvania and Ohio focus"
+            },
+            {
+                name: "Correctional Healthcare Companies (CHC)",
+                tier: "regional",
+                location: "Colorado",
+                region: "west",
+                website: "Now part of Centurion",
+                facilities: "Merged into Centurion",
+                states: "Western U.S. (legacy)",
+                services: ["Medical", "Mental Health"],
+                background: "Now operates as Centurion",
+                employees: "Part of Centurion",
+                founded: "1989",
+                notes: "Brand consolidated into Centurion"
+            },
+            {
+                name: "CCS/TMS (Correctional Medical Services)",
+                tier: "national",
+                location: "Legacy - now YesCare",
+                region: "nationwide",
+                website: "Now YesCare",
+                facilities: "Now part of YesCare",
+                states: "Nationwide (legacy)",
+                services: ["Medical", "Mental Health", "Dental"],
+                background: "Historic major provider; bankruptcy led to YesCare formation",
+                employees: "Part of YesCare",
+                founded: "1990s",
+                notes: "One of original 'big three' providers"
+            },
+            {
+                name: "Conmed Healthcare Management",
+                tier: "regional",
+                location: "New York",
+                region: "northeast",
+                website: null,
+                facilities: "25+",
+                states: "NY, NJ, CT",
+                services: ["Medical", "Mental Health"],
+                background: "Northeast regional provider",
+                employees: "300+",
+                founded: "2005",
+                notes: "Tri-state area focus"
+            },
+            {
+                name: "Mediko Health Services",
+                tier: "local",
+                location: "Florida",
+                region: "southeast",
+                website: null,
+                facilities: "15+",
+                states: "Florida",
+                services: ["Medical", "Nursing"],
+                background: "Florida regional provider",
+                employees: "200+",
+                founded: "2008",
+                notes: "County jails focus"
+            },
+            {
+                name: "Correctional Medical Associates",
+                tier: "local",
+                location: "Michigan",
+                region: "midwest",
+                website: null,
+                facilities: "10+",
+                states: "Michigan",
+                services: ["Medical", "Mental Health"],
+                background: "Michigan regional provider",
+                employees: "150+",
+                founded: "2010",
+                notes: "State and county facilities"
+            },
+            {
+                name: "Prison Health Services",
+                tier: "specialty",
+                location: "Tennessee (legacy)",
+                region: "nationwide",
+                website: "Defunct/absorbed",
+                facilities: "Legacy contracts absorbed",
+                states: "Nationwide (historic)",
+                services: ["Medical", "Mental Health"],
+                background: "Historic major provider; contracts absorbed by other providers",
+                employees: "N/A",
+                founded: "1978",
+                notes: "Pioneer in correctional healthcare; no longer operating"
+            },
+            {
+                name: "Matrix Providers",
+                tier: "specialty",
+                location: "Arizona",
+                region: "southwest",
+                website: null,
+                facilities: "Arizona facilities",
+                states: "Arizona",
+                services: ["Mental Health"],
+                background: "Behavioral health specialist for corrections",
+                employees: "200+",
+                founded: "2012",
+                notes: "Arizona corrections mental health"
+            },
+            {
+                name: "Correctional Healthcare Solutions",
+                tier: "regional",
+                location: "North Carolina",
+                region: "southeast",
+                website: null,
+                facilities: "20+",
+                states: "NC, SC, VA",
+                services: ["Medical", "Mental Health"],
+                background: "Carolinas regional provider",
+                employees: "250+",
+                founded: "2009",
+                notes: "Multi-state Southeast presence"
+            },
+            {
+                name: "Select Health of South Carolina",
+                tier: "local",
+                location: "South Carolina",
+                region: "southeast",
+                website: null,
+                facilities: "12+",
+                states: "South Carolina",
+                services: ["Medical", "Mental Health"],
+                background: "South Carolina regional provider",
+                employees: "180+",
+                founded: "2011",
+                notes: "County jail focus in SC"
+            },
+            {
+                name: "Correctional Medical Care",
+                tier: "local",
+                location: "Washington State",
+                region: "west",
+                website: null,
+                facilities: "15+",
+                states: "Washington",
+                services: ["Medical", "Mental Health"],
+                background: "Pacific Northwest provider",
+                employees: "200+",
+                founded: "2008",
+                notes: "Washington state and county facilities"
+            },
+            {
+                name: "Western Regional Medical",
+                tier: "regional",
+                location: "Arizona",
+                region: "southwest",
+                website: null,
+                facilities: "25+",
+                states: "AZ, NM, NV",
+                services: ["Medical", "Mental Health"],
+                background: "Southwest regional provider",
+                employees: "350+",
+                founded: "2010",
+                notes: "Three-state Southwest coverage"
+            }
+        ];
+
+        let filteredVendors = [...vendors];
+        let currentView = 'grid';
+
+        function renderVendors() {
+            const container = document.getElementById('vendorContainer');
+            
+            if (filteredVendors.length === 0) {
+                container.innerHTML = '<div class="no-results">No vendors match your search criteria. Try adjusting your filters.</div>';
+                return;
+            }
+
+            if (currentView === 'grid') {
+                container.className = 'grid-view';
+                container.innerHTML = filteredVendors.map(vendor => `
+                    <div class="vendor-card">
+                        <div class="vendor-header">
+                            <div>
+                                <div class="vendor-name">${vendor.name}</div>
+                                <div class="vendor-location">📍 ${vendor.location}</div>
+                            </div>
+                            <span class="vendor-tier tier-${vendor.tier}">${vendor.tier}</span>
+                        </div>
+                        <div class="vendor-details">
+                            ${vendor.website ? `<div class="detail-row">
+                                <span class="detail-label">Website</span>
+                                <a href="${vendor.website}" target="_blank" class="vendor-website">${vendor.website.replace('https://', '').replace('http://', '')}</a>
+                            </div>` : ''}
+                            <div class="detail-row">
+                                <span class="detail-label">Coverage</span>
+                                <span class="detail-value">${vendor.states}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Facilities</span>
+                                <span class="detail-value">${vendor.facilities}</span>
+                            </div>
+                            ${vendor.employees ? `<div class="detail-row">
+                                <span class="detail-label">Employees</span>
+                                <span class="detail-value">${vendor.employees}</span>
+                            </div>` : ''}
+                            ${vendor.founded ? `<div class="detail-row">
+                                <span class="detail-label">Founded</span>
+                                <span class="detail-value">${vendor.founded}</span>
+                            </div>` : ''}
+                            <div class="detail-row">
+                                <span class="detail-label">Background</span>
+                                <span class="detail-value">${vendor.background}</span>
+                            </div>
+                            ${vendor.notes ? `<div class="detail-row">
+                                <span class="detail-label">Notes</span>
+                                <span class="detail-value"><em>${vendor.notes}</em></span>
+                            </div>` : ''}
+                        </div>
+                        <div class="services-tags">
+                            ${vendor.services.map(service => `<span class="service-tag">${service}</span>`).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                container.className = 'table-view';
+                container.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Tier</th>
+                                <th>Location</th>
+                                <th>Coverage</th>
+                                <th>Facilities</th>
+                                <th>Services</th>
+                                <th>Website</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filteredVendors.map(vendor => `
+                                <tr>
+                                    <td><strong>${vendor.name}</strong></td>
+                                    <td><span class="vendor-tier tier-${vendor.tier}">${vendor.tier}</span></td>
+                                    <td>${vendor.location}</td>
+                                    <td>${vendor.states}</td>
+                                    <td>${vendor.facilities}</td>
+                                    <td>${vendor.services.slice(0, 3).join(', ')}${vendor.services.length > 3 ? '...' : ''}</td>
+                                    <td>${vendor.website ? `<a href="${vendor.website}" target="_blank" class="vendor-website">Visit</a>` : 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+        }
+
+        function filterVendors() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const tierFilter = document.getElementById('tierFilter').value;
+            const regionFilter = document.getElementById('regionFilter').value;
+            const serviceFilter = document.getElementById('serviceFilter').value;
+
+            filteredVendors = vendors.filter(vendor => {
+                const matchesSearch = searchTerm === '' || 
+                    vendor.name.toLowerCase().includes(searchTerm) ||
+                    vendor.location.toLowerCase().includes(searchTerm) ||
+                    vendor.states.toLowerCase().includes(searchTerm) ||
+                    vendor.background.toLowerCase().includes(searchTerm) ||
+                    vendor.services.some(s => s.toLowerCase().includes(searchTerm));
+
+                const matchesTier = tierFilter === 'all' || vendor.tier === tierFilter;
+                const matchesRegion = regionFilter === 'all' || vendor.region === regionFilter;
+                const matchesService = serviceFilter === 'all' || 
+                    vendor.services.some(s => s.toLowerCase().includes(serviceFilter));
+
+                return matchesSearch && matchesTier && matchesRegion && matchesService;
+            });
+
+            updateStats();
+            renderVendors();
+        }
+
+        function updateStats() {
+            document.getElementById('totalVendors').textContent = filteredVendors.length;
+            document.getElementById('nationalProviders').textContent = 
+                filteredVendors.filter(v => v.tier === 'national').length;
+            document.getElementById('regionalProviders').textContent = 
+                filteredVendors.filter(v => v.tier === 'regional').length;
+            document.getElementById('specialtyProviders').textContent = 
+                filteredVendors.filter(v => v.tier === 'specialty' || v.tier === 'local').length;
+        }
+
+        function switchView(view) {
+            currentView = view;
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderVendors();
+        }
+
+        function exportToCSV() {
+            const headers = ['Company Name', 'Tier', 'Location', 'Region', 'Coverage States', 'Facilities', 'Employees', 'Founded', 'Services', 'Website', 'Background', 'Notes'];
+            
+            const csvContent = [
+                headers.join(','),
+                ...filteredVendors.map(v => [
+                    `"${v.name}"`,
+                    v.tier,
+                    `"${v.location}"`,
+                    v.region,
+                    `"${v.states}"`,
+                    `"${v.facilities}"`,
+                    `"${v.employees || 'N/A'}"`,
+                    `"${v.founded || 'N/A'}"`,
+                    `"${v.services.join('; ')}"`,
+                    v.website || 'N/A',
+                    `"${v.background.replace(/"/g, '""')}"`,
+                    `"${(v.notes || '').replace(/"/g, '""')}"`
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `correctional_healthcare_vendors_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterVendors);
+        document.getElementById('tierFilter').addEventListener('change', filterVendors);
+        document.getElementById('regionFilter').addEventListener('change', filterVendors);
+        document.getElementById('serviceFilter').addEventListener('change', filterVendors);
+
+        // Initial render
+        renderVendors();
+    </script>
+</body>
+</html>
